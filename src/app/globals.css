@@ -5,12 +5,23 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --km-border-color: #171717;
+  --km-border-w: 10px;
+  --km-border-r: 20px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --km-border-color: #ffffff;
+  }
+  .km-border,
+  .km-border-b,
+  .km-border-r,
+  .km-border-rounded {
+    --tw-border-opacity: 1;
+    border-color: rgb(255 255 255 / var(--tw-border-opacity, 1)) /* #ffffff */;
   }
 }
 
@@ -18,4 +29,43 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .km-fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .km-fade-in-up.appear {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.km-border,
+.km-border-b,
+.km-border-r,
+.km-border-rounded {
+  --tw-border-opacity: 1;
+  border-color: var(--km-border-color);
+}
+
+.km-border {
+  border: var(--km-border-w) solid;
+  border-radius: var(--km-border-r);
+}
+
+.km-border-b {
+  border-bottom: var(--km-border-w) solid;
+}
+
+.km-border-r {
+  border-right: var(--km-border-w) solid;
+}
+
+.km-border-rounded {
+  border: var(--km-border-w) solid;
+  border-radius: 100%;
 }
