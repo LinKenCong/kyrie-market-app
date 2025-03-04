@@ -22,8 +22,10 @@ import {
 // });
 
 export const config = getDefaultConfig({
-  appName: "Kyrie Market App",
+  appName: "Kyrie Market App(Dev)",
   projectId: "YOUR_PROJECT_ID",
-  chains: [localhost],
+  chains: [
+    process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? localhost : bscTestnet,
+  ],
   ssr: true,
 });
