@@ -47,20 +47,17 @@ export default function Shop() {
   const fetchAssets = async () => {
     const response = await fetchKMGet(`orders/shop/${shopInfo.account}`, {
       page_num: "1",
-      page_size: "10",
+      page_size: "50",
     });
     if (response.res && response.res.data) {
-      if (response.res.data.total) {
-        setShopInfo({
-          ...shopInfo,
-          onSell: response.res.data.total,
-        });
-      }
+      setShopInfo({
+        ...shopInfo,
+        onSell: response.res.data.total,
+      });
       const list: Array<any> = response.res.data.list;
       let newAssets: AssetBaseData[] = await formatAssetCardList(
         list,
-        balanceData?.symbol as string,
-        balanceData?.decimals as number
+        balanceData?.symbol as string
       );
       if (newAssets.length > 0) {
         setAssets(newAssets);
@@ -96,11 +93,14 @@ export default function Shop() {
       img: imageSrc,
     });
     refetch();
-    fetchAssets();
   };
 
   useEffect(() => {
     initShopInfo();
+  }, []);
+
+  useEffect(() => {
+    fetchAssets();
     if (balanceData) {
       LocalStorageHelper.updateItem<CurrentShopState>("currentShop", {
         nativeCurrency: {
@@ -130,7 +130,9 @@ export default function Shop() {
                 )} ${balanceData.symbol}`
               : "Value: ... ETH"}
           </p>
-          <p className="text-xl text-center">On Sell: {shopInfo.onSell}</p>
+          <p className="text-xl text-center">
+            On Sell: {shopInfo.onSell}
+          </p>
         </div>
         <div>
           <button
@@ -147,10 +149,6 @@ export default function Shop() {
         <section className="flex flex-col gap-4">
           <h2 className="text-3xl font-bold">Products</h2>
           <div className="w-full grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {/* {assets &&
-              assets.map((item, i) => {
-                return <AssetCard key={i} {...item} />;
-              })} */}
             {isLoading ? (
               <div className="col-span-full text-center py-10">
                 Loading assets...

@@ -4,6 +4,8 @@ export type TokenMetadata = {
   imageUrl: string;
   description?: string;
   attributes?: { trait_type: string; value: string }[];
+  symbol?: string;
+  decimals?: number;
 };
 
 export type ShopInfo = {
@@ -42,6 +44,7 @@ export type OrderComponents = {
 
 export type OrderCreateParams = {
   signature: string;
+  chainId: string;
   shop: string;
   offerer: string;
   itemType: string;
@@ -59,6 +62,7 @@ export type OrderCreateParams = {
 export type OrderInfo = {
   uuid: string;
   signature: string;
+  chainId: string;
   shop: string;
   offerer: string;
   itemType: string;

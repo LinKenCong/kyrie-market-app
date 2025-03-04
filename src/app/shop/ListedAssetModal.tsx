@@ -10,6 +10,8 @@ import {
   approveTokenTo,
   msgSigner,
   getOrderHash,
+  formatTokenValue,
+  getTokenDecimals,
 } from "@/utils";
 import { useState } from "react";
 import LocalStorageHelper from "@/utils/localStorageHelper";
@@ -95,6 +97,7 @@ export default function ListedAssetModal({
     const currentShop =
       LocalStorageHelper.getItem<CurrentShopState>("currentShop");
     if (!account || !currentShop) return;
+    const currentChainId = account.accountInfo!.chainId;
     const currentAccount = account.accountInfo!.account as `0x${string}`;
     const currentShopAccount = currentShop.shopInfo!.account as `0x${string}`;
     const currencyDecimals = currentShop.nativeCurrency!.decimals;
@@ -211,17 +214,20 @@ export default function ListedAssetModal({
     const signer = msgSigner(orderHash, signature);
     if (!signature || signer !== componentsData.offerer)
       return console.error("Failed to sign message");
+    const tokenDecimals = (await getTokenDecimals(componentsData.asset.token))
+      .res as number;
 
     const reqData = {
       signature: signature,
+      chainId: String(currentChainId),
       shop: currentShopAccount,
       offerer: componentsData.offerer,
       itemType: componentsData.asset.itemType,
       provider: componentsData.asset.provider,
       token: componentsData.asset.token,
       tokenId: componentsData.asset.tokenId,
-      amount: componentsData.asset.amount,
-      price: componentsData.price,
+      amount: formatTokenValue(componentsData.asset.amount, tokenDecimals),
+      price: formatTokenValue(componentsData.price, currencyDecimals),
       expiry: componentsData.expiry,
       salt: componentsData.salt,
       orderHash: orderHash,

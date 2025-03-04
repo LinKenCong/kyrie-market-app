@@ -77,8 +77,7 @@ export const formatAssetAmount = (tokenType: string, amount: string) => {
 
 export const formatAssetBaseData = async (
   item: OrderInfo,
-  currency: string = "ETH",
-  decimals: number = 18
+  currency: string = "ETH"
 ) => {
   let title = "Unknown";
   let amount = item.amount;
@@ -88,10 +87,8 @@ export const formatAssetBaseData = async (
   switch (item.itemType) {
     case "erc20":
       {
-        const tokenDecimals = (await getTokenDecimals(item.token)).res;
         const tokenName = (await getTokenName(item.token)).res;
         title = tokenName as string;
-        amount = formatTokenValue(item.amount, tokenDecimals as number);
         tokenMetadata = {
           image: image,
           name: title,
@@ -134,15 +131,13 @@ export const formatAssetBaseData = async (
       break;
   }
 
-  let price = formatTokenValue(item.price, decimals);
-
   let asset: AssetBaseData = {
     uuid: item.uuid,
     itemType: item.itemType,
     token: item.token,
     tokenId: item.tokenId,
     amount: amount,
-    price: price,
+    price: item.price,
     currency: currency,
     title: title,
     image: image,
@@ -153,13 +148,12 @@ export const formatAssetBaseData = async (
 
 export const formatAssetCardList = async (
   list: OrderInfo[],
-  currency: string = "ETH",
-  decimals: number = 18
+  currency: string = "ETH"
 ) => {
   let cardList: AssetBaseData[] = [];
   for (let i = 0; i < list.length; i++) {
     const item = list[i];
-    const asset = await formatAssetBaseData(item, currency, decimals);
+    const asset = await formatAssetBaseData(item, currency);
     cardList.push(asset);
   }
   return cardList;

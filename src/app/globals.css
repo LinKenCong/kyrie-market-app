@@ -21,7 +21,7 @@
   .km-border-r,
   .km-border-rounded {
     --tw-border-opacity: 1;
-    border-color: rgb(255 255 255 / var(--tw-border-opacity, 1)) /* #ffffff */;
+    border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
   }
 }
 
@@ -49,7 +49,7 @@ body {
 .km-border-r,
 .km-border-rounded {
   --tw-border-opacity: 1;
-  border-color: var(--km-border-color);
+  border-color: var(--km-border-color) !important;
 }
 
 .km-border {

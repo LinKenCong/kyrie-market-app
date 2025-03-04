@@ -32,8 +32,7 @@ export default function Home() {
         const list: Array<any> = response.res.data.list;
         let newAssets: AssetBaseData[] = await formatAssetCardList(
           list,
-          balanceData?.symbol as string,
-          balanceData?.decimals as number
+          balanceData?.symbol as string
         );
         if (newAssets.length > 0) {
           setAssets(newAssets);
