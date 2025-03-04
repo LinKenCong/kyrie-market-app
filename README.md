@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kyrie Market App (DEV Version)
 
-## Getting Started
+[![Solidity Version](https://img.shields.io/badge/Solidity-^0.8.0-blue.svg)](https://soliditylang.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-First, run the development server:
+A decentralized asset trading marketplace based on the ERC6551 protocol, supporting multi-standard token trading and shop hosting system.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+PS: This is currently an MVP (Minimum Viable Product) development version, not fully secure, and the code is still being optimized.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌟 Core Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🏪 Independent Shop System
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Create **smart contract account shops** via ERC6551 protocol
+- Support for asset storage/custody/trading integrated management
+- Customizable shop trading strategies
 
-## Learn More
+### 🛍️ Multi-Standard Support
 
-To learn more about Next.js, take a look at the following resources:
+- ERC20 token trading
+- ERC721 NFT trading
+- ERC1155 multi-asset trading
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🔒 Secure Trading Mechanism
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Off-chain order signature verification (EIP-712)
+- On-chain asset validity verification
+- Gas-optimized transaction execution
 
-## Deploy on Vercel
+## ⚠️ Security Considerations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Verify shop contract address before trading
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Check order signature validity
+
+Confirm asset transfer events
+
+## 🤝 Contribution Guidelines
+
+PRs are welcome, please follow:
+
+Fork the repository
+
+Create a feature branch
+
+Submit test cases
+
+Update documentation
+
+Create a Pull Request
+
+## TODO List
+
+| Todo                                     | Status |
+| :----------------------------------------- | ------ |
+| Multi-chain support                        |        |
+| Auto-scan contract events to update status |        |
+| Optimize asset data retrieval method       |        |
+| Optimize asset data formatting method      |        |
+| Optimize parameter type validation method  |        |
+| Optimize UI                                |        |
