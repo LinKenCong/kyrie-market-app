@@ -51,8 +51,11 @@ Create a Pull Request
 
 ## TODO List
 
-| Todo                                     | Status |
+| Todo                                       | Status |
 | :----------------------------------------- | ------ |
+| Order Parameter Add "Chain Symbol"         |        |
+| Optimize Hooks                             |        |
+| Delete unused code                         |        |
 | Multi-chain support                        |        |
 | Auto-scan contract events to update status |        |
 | Optimize asset data retrieval method       |        |
