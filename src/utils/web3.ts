@@ -79,34 +79,45 @@ export const formatAssetBaseData = async (
   item: OrderInfo,
   currency: string = "ETH"
 ) => {
-  let title = "Unknown";
-  let amount = item.amount;
-  let image = AssetTypeImagePathByName[item.itemType];
-  let tokenMetadata;
+  let asset: AssetBaseData = {
+    uuid: item.uuid,
+    itemType: item.itemType,
+    token: item.token,
+    tokenId: item.tokenId,
+    amount: item.amount,
+    price: item.price,
+    currency: currency,
+    title: "Unknown",
+    image: AssetTypeImagePathByName[item.itemType],
+    metadata: {
+      image: AssetTypeImagePathByName[item.itemType],
+      name: "Unknown",
+      imageUrl: AssetTypeImagePathByName[item.itemType],
+      description: "",
+      attributes: [],
+    } as TokenMetadata,
+  };
 
   switch (item.itemType) {
     case "erc20":
       {
-        const tokenName = (await getTokenName(item.token)).res;
-        title = tokenName as string;
-        tokenMetadata = {
-          image: image,
-          name: title,
-          imageUrl: image,
-        };
+        const tokenName = (await getTokenName(item.token)).res as string;
+        asset.title = tokenName;
+        asset.metadata && (asset.metadata.name = tokenName);
       }
       break;
     case "erc721":
       {
         const tokenUri = (await getTokenURI(item.token, item.tokenId)).res;
         const metadata = (await fetchNFTMetadata(tokenUri as string)).res;
-        image = formatImgSrc(metadata?.image || "");
-        title = metadata?.name as string;
-        amount = "1";
-        tokenMetadata = {
-          image: metadata?.image || image,
-          name: title,
-          imageUrl: image,
+        asset.image = formatImgSrc(metadata?.image || "");
+        asset.title = metadata?.name as string;
+        asset.amount = "1";
+        asset.metadata = {
+          ...asset.metadata,
+          image: metadata?.image || asset.image,
+          name: asset.title,
+          imageUrl: asset.image,
           description: metadata?.description,
           attributes: metadata?.attributes,
         };
@@ -116,12 +127,12 @@ export const formatAssetBaseData = async (
       {
         const tokenUri = (await getERC1155URI(item.token, item.tokenId)).res;
         const metadata = (await fetchNFTMetadata(tokenUri as string)).res;
-        image = formatImgSrc(metadata?.image || "");
-        title = metadata?.name as string;
-        tokenMetadata = {
-          image: metadata?.image || image,
-          name: title,
-          imageUrl: image,
+        asset.image = formatImgSrc(metadata?.image || "");
+        asset.title = metadata?.name as string;
+        asset.metadata = {
+          image: metadata?.image || asset.image,
+          name: asset.title,
+          imageUrl: asset.image,
           description: metadata?.description,
           attributes: metadata?.attributes,
         };
@@ -131,18 +142,6 @@ export const formatAssetBaseData = async (
       break;
   }
 
-  let asset: AssetBaseData = {
-    uuid: item.uuid,
-    itemType: item.itemType,
-    token: item.token,
-    tokenId: item.tokenId,
-    amount: amount,
-    price: item.price,
-    currency: currency,
-    title: title,
-    image: image,
-    metadata: tokenMetadata as TokenMetadata,
-  };
   return asset;
 };
 

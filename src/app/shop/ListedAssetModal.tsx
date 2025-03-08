@@ -214,8 +214,12 @@ export default function ListedAssetModal({
     const signer = msgSigner(orderHash, signature);
     if (!signature || signer !== componentsData.offerer)
       return console.error("Failed to sign message");
-    const tokenDecimals = (await getTokenDecimals(componentsData.asset.token))
-      .res as number;
+    let amount = componentsData.asset.amount;
+    if (componentsData.asset.itemType === "erc20") {
+      const tokenDecimals = (await getTokenDecimals(componentsData.asset.token))
+        .res as number;
+      amount = formatTokenValue(componentsData.asset.amount, tokenDecimals);
+    }
 
     const reqData = {
       signature: signature,
@@ -226,7 +230,7 @@ export default function ListedAssetModal({
       provider: componentsData.asset.provider,
       token: componentsData.asset.token,
       tokenId: componentsData.asset.tokenId,
-      amount: formatTokenValue(componentsData.asset.amount, tokenDecimals),
+      amount: amount,
       price: formatTokenValue(componentsData.price, currencyDecimals),
       expiry: componentsData.expiry,
       salt: componentsData.salt,
@@ -241,7 +245,7 @@ export default function ListedAssetModal({
       return;
     }
     onClose();
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (

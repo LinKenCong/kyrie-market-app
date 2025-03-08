@@ -4,31 +4,31 @@ import { BaseLoadingIndicator } from "@/components/ui/LoadingIndicator";
 import PageLayout from "@/components/ui/PageLayoutBox";
 import { OrderInfo, TokenMetadata } from "@/types";
 import { CurrentAccountState, CurrentAssetState } from "@/types/localStorage";
-import {
-  fetchKMGet,
-  formatTokenValue,
-  formatAssetBaseData,
-  fetchKMPost,
-} from "@/utils";
+import { fetchKMGet, formatAssetBaseData, fetchKMPost } from "@/utils";
 import LocalStorageHelper from "@/utils/localStorageHelper";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
-export default function Assets() {
-  const { openConnectModal } = useConnectModal();
-  const router = useRouter();
+export default function Asset() {
   const searchParams = useSearchParams();
   const uuid = searchParams.get("uuid");
+
+  const { openConnectModal } = useConnectModal();
+  const router = useRouter();
   const [assetInfo, setAssetInfo] = useState<OrderInfo | null>(null);
   const [currentAccountState, setCurrentAccountState] =
     useState<CurrentAccountState | null>(null);
 
   const getAssetInfo = async () => {
     try {
-      const response: any = await fetchKMGet(`orders/${uuid}`);
+      const response = await fetchKMGet(`orders/${uuid}`);
+      if (!response.res?.data?.order) {
+        throw new Error("Failed to fetch order data");
+      }
       const data = response.res.data.order;
-      let newInfo: OrderInfo = {
+      const newInfo: OrderInfo = {
         uuid: data.uuid,
         signature: data.signature,
         chainId: data.chainId,
@@ -59,7 +59,9 @@ export default function Assets() {
   };
 
   useEffect(() => {
-    getAssetInfo();
+    if (uuid) {
+      getAssetInfo();
+    }
   }, []);
 
   const [metadata, setMetadata] = useState<TokenMetadata | null>(null);
@@ -93,15 +95,13 @@ export default function Assets() {
           <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
             <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
               <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
-                <img
-                  className="km-border w-full dark:hidden"
+                <Image
+                  className="km-border w-full"
                   src={metadata.imageUrl}
-                  alt=""
-                />
-                <img
-                  className="km-border w-full hidden dark:block"
-                  src={metadata.imageUrl}
-                  alt=""
+                  alt={metadata.name || "Asset image"}
+                  width={500}
+                  height={500}
+                  priority
                 />
               </div>
 

@@ -14,6 +14,7 @@ import {
 import LocalStorageHelper from "@/utils/localStorageHelper";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const formatPrice = (price: string) => {
   const etherPrice = (Number(price) / 1e18).toString();
@@ -30,6 +31,7 @@ export default function ConfirmPage() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [data, setData] = useState<CurrentAssetState | null>(null);
   const [user, setUser] = useState<CurrentAccountState | null>(null);
+
   useEffect(() => {
     const fetchedData =
       LocalStorageHelper.getItem<CurrentAssetState>("currentAsset");
@@ -85,7 +87,6 @@ export default function ConfirmPage() {
         try {
           const order = data!.orderInfo as OrderInfo;
 
-          console.log("orderComponents", order);
           const tx = await executeOrderToShop(
             order.shop as `0x${string}`,
             order.componentsPayload,
@@ -114,12 +115,13 @@ export default function ConfirmPage() {
           <>
             <div className="flex flex-col md:flex-row gap-8">
               <div className="w-full md:w-1/2">
-                <img
+                <Image
                   src={data.metadata.imageUrl}
                   alt={data.metadata.name}
                   width={500}
                   height={500}
                   className="km-border"
+                  priority
                 />
               </div>
               <div className="km-border w-full md:w-1/2 p-4">

@@ -5,12 +5,11 @@ import {
   simulateContract,
 } from "@wagmi/core";
 import { config } from "@/wagmi";
-import { fetchNFTMetadata, FetchResponse, MetadataType } from "./api";
 import { ShopInfoType, Web3OperationResult } from "@/types";
 
 import { KM_CONTRACTS } from "@/consts/config";
 import { ethers } from "ethers";
-import { ABI_ERC721, ABI_SHOP_FACTORY, ABI_SHOP_ACCOUNT } from "@/abis";
+import { ABI_SHOP_FACTORY, ABI_SHOP_ACCOUNT } from "@/abis";
 
 export const signMsg = async (msg: string) => {
   const sig = await signMessage(config, {
@@ -19,36 +18,6 @@ export const signMsg = async (msg: string) => {
     },
   });
   return sig;
-};
-
-/// TODO: Optimize this function
-export const getNFTMetadata = async (token: string, tokenId: string) => {
-  let data: FetchResponse<MetadataType> = {
-    res: {
-      name: "Unknown",
-      image: "/fallback-image.png",
-    },
-    error: "",
-  };
-  try {
-    const tokenUrl = await readContract(config, {
-      abi: ABI_ERC721,
-      functionName: "tokenURI",
-      address: token as `0x${string}`,
-      args: [BigInt(tokenId)],
-    });
-    if (!tokenUrl || typeof tokenUrl !== "string") {
-      throw new Error("Invalid token URI returned");
-    }
-    const metadata = await fetchNFTMetadata(tokenUrl);
-    return metadata;
-  } catch (error) {
-    console.error(
-      `Failed to fetch NFT metadata for token: ${token}, tokenId: ${tokenId}`,
-      error
-    );
-    return data;
-  }
 };
 
 export const getShopInfo = async (shopId: string) => {

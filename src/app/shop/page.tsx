@@ -8,9 +8,7 @@ import { IMG_ERROR_PATH, KM_CONTRACTS } from "@/consts/config";
 import {
   getShopInfo,
   formatTokenValue,
-  fetchKMGet,
   formatImgSrc,
-  formatAssetCardList,
   fetchNFTMetadata,
   getTokenURI,
 } from "@/utils";
@@ -20,7 +18,7 @@ import LocalStorageHelper from "@/utils/localStorageHelper";
 import { CurrentShopState } from "@/types/localStorage";
 import { AssetCard } from "@/components/ui/AssetCard";
 import { FadeInElement } from "@/components/ui/FadeInElement";
-import { AssetBaseData } from "@/types";
+import { useKMAssetList } from "@/hooks";
 
 export default function Shop() {
   const searchParams = useSearchParams();
@@ -41,30 +39,14 @@ export default function Shop() {
     address: shopInfo.account as `0x${string}`,
   });
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [assets, setAssets] = useState<AssetBaseData[]>([]);
-
-  const fetchAssets = async () => {
-    const response = await fetchKMGet(`orders/shop/${shopInfo.account}`, {
-      page_num: "1",
-      page_size: "50",
-    });
-    if (response.res && response.res.data) {
-      setShopInfo({
-        ...shopInfo,
-        onSell: response.res.data.total,
-      });
-      const list: Array<any> = response.res.data.list;
-      let newAssets: AssetBaseData[] = await formatAssetCardList(
-        list,
-        balanceData?.symbol as string
-      );
-      if (newAssets.length > 0) {
-        setAssets(newAssets);
-      }
-    }
-    setIsLoading(false);
-  };
+  const listData = useKMAssetList({
+    paginationParams: {
+      page_num: 1,
+      page_size: 50,
+      uri: `shop/${shopInfo.account}`,
+    },
+    enabled: false,
+  });
 
   const initShopInfo = async () => {
     const shopInfoRes = await getShopInfo(id as string);
@@ -100,7 +82,6 @@ export default function Shop() {
   }, []);
 
   useEffect(() => {
-    fetchAssets();
     if (balanceData) {
       LocalStorageHelper.updateItem<CurrentShopState>("currentShop", {
         nativeCurrency: {
@@ -110,6 +91,9 @@ export default function Shop() {
           symbol: balanceData.symbol,
         },
       });
+    }
+    if (shopInfo.account.length >= 42) {
+      listData.refetch();
     }
   }, [balanceData]);
 
@@ -130,9 +114,7 @@ export default function Shop() {
                 )} ${balanceData.symbol}`
               : "Value: ... ETH"}
           </p>
-          <p className="text-xl text-center">
-            On Sell: {shopInfo.onSell}
-          </p>
+          <p className="text-xl text-center">On Sell: {shopInfo.onSell}</p>
         </div>
         <div>
           <button
@@ -149,12 +131,13 @@ export default function Shop() {
         <section className="flex flex-col gap-4">
           <h2 className="text-3xl font-bold">Products</h2>
           <div className="w-full grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {isLoading ? (
+            {listData.isLoading ? (
               <div className="col-span-full text-center py-10">
                 Loading assets...
               </div>
             ) : (
-              assets.map((item, i) => (
+              listData.data &&
+              listData.data.map((item, i) => (
                 <FadeInElement key={item.uuid} delay={i * 150}>
                   <AssetCard {...item} />
                 </FadeInElement>

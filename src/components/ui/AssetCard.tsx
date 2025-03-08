@@ -5,8 +5,8 @@ import { BasePageImage } from "./PageImage";
 import { AssetBaseData } from "@/types";
 
 export const AssetCard = (item: AssetBaseData) => {
-  const URL = `/assets?uuid=${encodeURIComponent(item.uuid)}`;
-
+  const URL = `/asset?uuid=${encodeURIComponent(item.uuid)}`;
+  /// TODO: Show Chain ID
   return (
     <div className="km-border w-full max-w-sm bg-white shadow-sm dark:bg-gray-800 ">
       <Link href={URL}>

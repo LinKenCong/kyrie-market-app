@@ -1,11 +1,10 @@
 import { KM_API } from "@/consts/config";
-
-export type FetchResponse<T> = {
+type FetchResponse<T> = {
   res: T | null;
   error: any;
 };
 
-export type KMResponseType = {
+type KMResponseType = {
   code: number;
   message: string;
   data: any;

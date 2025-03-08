@@ -1,5 +1,10 @@
-import { IMG_ERROR_PATH, KM_CONTRACTS } from "@/consts/config";
-import { getNFTMetadata, formatAddress, formatImgSrc } from "@/utils";
+import { KM_CONTRACTS } from "@/consts/config";
+import {
+  fetchNFTMetadata,
+  formatAddress,
+  formatImgSrc,
+  getTokenURI,
+} from "@/utils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import ShopCardImage from "./ShopCardImage";
@@ -17,11 +22,11 @@ export function ShopCard(item: ShopCardProps) {
   const [imgSrc, setImgSrc] = useState("/");
 
   const initShopInfo = async () => {
-    const metadata = await getNFTMetadata(
-      KM_CONTRACTS.ShopFactory,
-      item.id as string
-    );
-    const imageSrc = formatImgSrc(metadata.res!.image);
+    const tokenUri = (
+      await getTokenURI(KM_CONTRACTS.ShopFactory, item.id as string)
+    ).res;
+    const metadata = (await fetchNFTMetadata(tokenUri as string)).res;
+    const imageSrc = formatImgSrc(metadata!.image);
     setImgSrc(imageSrc);
   };
 
